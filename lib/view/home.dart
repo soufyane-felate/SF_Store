@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:store/view/NavBar.dart';
 import 'package:store/view/product_Details.dart';
 
 void main() {
@@ -10,50 +11,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeNavigation(),
+      home: Home(),
     );
   }
 }
-
-class HomeNavigation extends StatefulWidget {
-  const HomeNavigation({super.key});
-
-  @override
-  State<HomeNavigation> createState() => _HomeNavigationState();
-}
-
-class _HomeNavigationState extends State<HomeNavigation> {
-  int index = 0;
-  final List<Widget> pages = [
-    Home(),
-    Details(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: NavigationBar(
-        height: 65,
-        selectedIndex: index,
-        onDestinationSelected: (index) => setState(() => this.index = index),
-        destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: "Home",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.details_outlined),
-            selectedIcon: Icon(Icons.details),
-            label: "Details",
-          ),
-        ],
-      ),
-      body: pages[index],
-    );
-  }
-}
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -68,6 +29,9 @@ class _HomeState extends State<Home> {
     "images/timesheet.png",
     "images/imgTime.jpg",
     "images/timesheet.png",
+    "images/smart_watch.webp",
+    "images/sa3awomen.webp",
+    "images/S88ef21e801784232887782184dbd37dbo.jpg_220x220q75.jpg_.webp"
   ];
 
   Timer? _timer;
@@ -100,7 +64,9 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: NavBar(),
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(171, 7, 231, 231),
         title: Text("Home"),
       ),
       body: SingleChildScrollView(
@@ -263,6 +229,50 @@ class _HomeState extends State<Home> {
                                     image: DecorationImage(
                                       fit: BoxFit.fill,
                                       image: AssetImage("images/timesheet.png"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: Card(
+                                elevation: 10.0,
+                                shadowColor: Colors.grey.withOpacity(0.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Container(
+                                  height: 200,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage(
+                                          "images/S88ef21e801784232887782184dbd37dbo.jpg_220x220q75.jpg_.webp"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 10),
+                              child: Card(
+                                elevation: 10.0,
+                                shadowColor: Colors.grey.withOpacity(0.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Container(
+                                  height: 200,
+                                  width: 150,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    image: DecorationImage(
+                                      fit: BoxFit.fill,
+                                      image:
+                                          AssetImage("images/sa3awomen.webp"),
                                     ),
                                   ),
                                 ),

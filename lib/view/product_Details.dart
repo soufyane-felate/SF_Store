@@ -16,6 +16,9 @@ class _DetailsState extends State<Details> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: Text("Details"),),
+        body: ListView(
+        ),
+        
       ),
     );
   }

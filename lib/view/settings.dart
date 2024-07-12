@@ -27,7 +27,7 @@ class _settingsState extends State<settings> {
                   Expanded(
                     child:  ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+                  //Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
                 },
                 child: Text(
                   'Buy',

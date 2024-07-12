@@ -2,14 +2,20 @@
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
+  final String username;
+  final String email;
+
+  const NavBar({Key? key, required this.email, required this.username})
+      : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
         child: ListView(
       children: [
         UserAccountsDrawerHeader(
-          accountName: Text("Soufyane felate"),
-          accountEmail: Text("leader001@gmail.com"),
+          accountName: Text(username),
+          accountEmail: Text(email),
           currentAccountPicture: CircleAvatar(
             child: ClipOval(
               child: Image.network(

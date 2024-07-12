@@ -8,15 +8,18 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Home(),
+      home: Home(email: 'email@gmail.com', username: 'user',),
     );
   }
 }
 class Home extends StatefulWidget {
-  const Home({super.key});
+   final String username;
+  final String email;
+  const Home({Key?key,required this.email,required this.username}):super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -64,7 +67,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBar(),
+      drawer: NavBar(username: widget.username,email: widget.email,),
       appBar: AppBar(
         backgroundColor: Color.fromARGB(171, 7, 231, 231),
         title: Text("Home"),

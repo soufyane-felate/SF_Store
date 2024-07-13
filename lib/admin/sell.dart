@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:store/view/NavBar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:store/view/home.dart';
 
 void main() {
   runApp(MyApp());
@@ -10,282 +11,210 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Home(username: 'Default', email: 'default@example.com'),
+      home: CheckAuth(),
     );
   }
 }
 
-class Home extends StatefulWidget {
-  final String username;
-  final String email;
-
-  const Home({Key? key, required this.email, required this.username}) : super(key: key);
-
+class CheckAuth extends StatefulWidget {
   @override
-  State<Home> createState() => _HomeState();
+  _CheckAuthState createState() => _CheckAuthState();
 }
 
-class _HomeState extends State<Home> {
-  final PageController _pageController = PageController();
-  final List<String> images = [
-    "images/imgTime.jpg",
-    "images/timesheet.png",
-    "images/imgTime.jpg",
-    "images/timesheet.png",
-    "images/smart_watch.webp",
-    "images/sa3awomen.webp",
-    "images/S88ef21e801784232887782184dbd37dbo.jpg_220x220q75.jpg_.webp"
-  ];
-
-  Timer? _timer;
-  int _currentPage = 0;
+class _CheckAuthState extends State<CheckAuth> {
+  bool _isFirstTime = true;
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
-      if (_currentPage < images.length - 1) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    });
+    _checkFirstTime();
   }
 
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _pageController.dispose();
-    super.dispose();
+  void _checkFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isFirstTime = prefs.getBool('isFirstTime');
+    if (isFirstTime != null && !isFirstTime) {
+      setState(() {
+        _isFirstTime = false;
+      });
+    } else {
+      await prefs.setBool('isFirstTime', true);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBar(username: widget.username, email: widget.email),
-      appBar: AppBar(
-        backgroundColor: Color.fromARGB(171, 7, 231, 231),
-        title: Text("Home"),
+      body: Center(
+        child: _isFirstTime
+            ? Sell()
+            : Home(email: 'email@gmail.com', username: 'user', img: '', description: '', name: '', quantite: '',),
       ),
-      body: SingleChildScrollView(
+    );
+  }
+}
+
+class Sell extends StatefulWidget {
+  const Sell({super.key});
+
+  @override
+  State<Sell> createState() => _SellState();
+}
+
+class _SellState extends State<Sell> {
+  var userController = TextEditingController();
+  var emailController = TextEditingController();
+  var passController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sign Up'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Center(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                height: 600,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 25,
-                      left: 20,
-                      child: Material(
-                        child: Container(
-                          height: 170.0,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(0.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                offset: Offset(-10, 10),
-                                blurRadius: 20.0,
-                                spreadRadius: 4.0,
-                              )
-                            ],
+              Text(
+                "Sign Up",
+                style: TextStyle(fontFamily: 'Baskervville', fontSize: 40),
+              ),
+              SizedBox(height: 15.0),
+              TextField(
+                controller: userController,
+                decoration: InputDecoration(
+                  labelText: "Username",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+              SizedBox(height: 15.0),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+              SizedBox(height: 15.0),
+              TextField(
+                controller: passController,
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                keyboardType: TextInputType.visiblePassword,
+                obscureText: true,
+              ),
+              SizedBox(height: 15.0),
+              ElevatedButton(
+                onPressed: () async {
+                  if (userController.text.isNotEmpty &&
+                      emailController.text.isNotEmpty &&
+                      passController.text.isNotEmpty) {
+                    if (RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                        .hasMatch(emailController.text)) {
+                      SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      await prefs.setBool('isFirstTime', false);
+                      await prefs.setString('username', userController.text);
+                      await prefs.setString('email', emailController.text);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Home(
+                            username: userController.text,
+                            email: emailController.text,
+                             img: '', description: '', name: '', quantite: '',
                           ),
                         ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 30,
-                      child: Card(
-                        elevation: 10.0,
-                        shadowColor: Colors.grey.withOpacity(0.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        child: Container(
-                          height: 200,
-                          width: 150,
-                          child: PageView.builder(
-                            controller: _pageController,
-                            itemCount: images.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage(images[index]),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 184,
-                      top: 25,
-                      child: Container(
-                        width: 207,
-                        color: Colors.amber,
-                        child: Center(
-                          child: SizedBox(
-                            child: Text(
-                              "shop now",
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            title: Text(
+                              "Invalid Email",
                               style: TextStyle(
-                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
                               ),
+                            ),
+                            content:
+                                Text("Please enter a valid email address."),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text(
+                                  'OK',
+                                  style: TextStyle(
+                                    color: Colors.blue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          title: Text(
+                            "Incomplete Form",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red,
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 184,
-                      top: 52,
-                      child: Container(
-                        width: 207,
-                        height: 143,
-                        color: Color.fromARGB(255, 236, 235, 235),
-                        child: Text(
-                          " Summer sales up to 50%",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontFamily: 'Baskervville',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 250,
-                      left: 20,
-                      right: 20,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage("images/logo.png"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage("images/store.png"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage("images/timesheet.png"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage(
-                                          "images/S88ef21e801784232887782184dbd37dbo.jpg_220x220q75.jpg_.webp"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image:
-                                          AssetImage("images/sa3awomen.webp"),
-                                    ),
-                                  ),
+                          content: Text("Please fill all fields to proceed."),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: Text(
+                                'OK',
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
-                  ],
+                        );
+                      },
+                    );
+                  }
+                },
+                child: Text("Sign up"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  padding: EdgeInsets.symmetric(horizontal: 170, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
             ],

@@ -1,5 +1,8 @@
 // navbar.dart
 import 'package:flutter/material.dart';
+import 'package:store/admin/login.dart';
+import 'package:store/view/home.dart';
+import 'package:store/view/settings.dart';
 
 class NavBar extends StatelessWidget {
   final String username;
@@ -30,7 +33,34 @@ class NavBar extends StatelessWidget {
             image: DecorationImage(
                 image: AssetImage("images/man.jpg"), fit: BoxFit.cover),
           ),
-        )
+        ),
+        ListTile(
+          leading: Icon(Icons.home),
+          title: Text("Home"),
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Home(email: email, username: username)));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text("Settings"),
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => settings()));
+          },
+        ),
+        ListTile(
+          leading: Icon(Icons.settings),
+          title: Text("admin"),
+          onTap: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Login()));
+          },
+        ),
       ],
     ));
   }

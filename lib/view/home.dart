@@ -1,25 +1,43 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:store/view/NavBar.dart';
-import 'package:store/view/product_Details.dart';
+import 'NavBar.dart';
+import 'product_Details.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Home(email: 'email@gmail.com', username: 'user',),
+      home: Home(
+        email: 'email@gmail.com',
+        username: 'user',
+      ),
+      debugShowCheckedModeBanner:
+          false, // Set this to false to remove the debug banner
     );
   }
 }
+
 class Home extends StatefulWidget {
-   final String username;
+  final String username;
   final String email;
-  const Home({Key?key,required this.email,required this.username}):super(key: key);
+  final String img;
+  final String quantite;
+  final String description;
+  final String name;
+
+  const Home(
+      {Key? key,
+      required this.email,
+      required this.username,
+      this.img = "",
+      this.quantite = "",
+      this.description = "",
+      this.name = ""})
+      : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -67,7 +85,10 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: NavBar(username: widget.username,email: widget.email,),
+      drawer: NavBar(
+        username: widget.username,
+        email: widget.email,
+      ),
       appBar: AppBar(
         backgroundColor: Color.fromARGB(171, 7, 231, 231),
         title: Text("Home"),
@@ -139,12 +160,10 @@ class _HomeState extends State<Home> {
                         width: 207,
                         color: Colors.amber,
                         child: Center(
-                          child: SizedBox(
-                            child: Text(
-                              "shop now",
-                              style: TextStyle(
-                                fontSize: 24,
-                              ),
+                          child: Text(
+                            "shop now",
+                            style: TextStyle(
+                              fontSize: 24,
                             ),
                           ),
                         ),
@@ -174,113 +193,88 @@ class _HomeState extends State<Home> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage("images/logo.png"),
+                            ...images.map((image) {
+                              return Container(
+                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                child: Card(
+                                  elevation: 10.0,
+                                  shadowColor: Colors.grey.withOpacity(0.5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Container(
+                                    height: 200,
+                                    width: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      image: DecorationImage(
+                                        fit: BoxFit.fill,
+                                        image: AssetImage(image),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage("images/store.png"),
-                                    ),
+                              );
+                            }).toList(),
+                            if (widget.img.isNotEmpty)
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 10),
+                                child: Card(
+                                  elevation: 10.0,
+                                  shadowColor: Colors.grey.withOpacity(0.5),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 150,
+                                        width: 150,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(widget.img),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        child: Column(
+                                          
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              widget.name,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              widget.quantite,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              widget.description,
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage("images/timesheet.png"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage(
-                                          "images/S88ef21e801784232887782184dbd37dbo.jpg_220x220q75.jpg_.webp"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 10),
-                              child: Card(
-                                elevation: 10.0,
-                                shadowColor: Colors.grey.withOpacity(0.5),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: Container(
-                                  height: 200,
-                                  width: 150,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    image: DecorationImage(
-                                      fit: BoxFit.fill,
-                                      image:
-                                          AssetImage("images/sa3awomen.webp"),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),

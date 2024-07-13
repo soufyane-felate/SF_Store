@@ -3,8 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store/Client/sign_up.dart';
-import 'package:store/test.dart';
-
 import 'package:store/view/home.dart';
 
 const Color pink = Color.fromARGB(255, 12, 143, 250);
@@ -26,9 +24,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Builder(
-        builder: (context) => SplashScreen(),
-      ),
+      home: SplashScreen(),
     );
   }
 }
@@ -68,23 +64,35 @@ class _SplashScreenState extends State<SplashScreen>
         curve: Curves.easeInOutCubic,
       ),
     );
+
+    _checkAuthStatus();
+  }
+
+  void _checkAuthStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isLoggedIn = prefs.getBool('isLoggedIn');
+    await Future.delayed(Duration(seconds: 5));
+
+    if (isLoggedIn != null && isLoggedIn) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => Home(
+            username: prefs.getString('username') ?? 'user',
+            email: prefs.getString('email') ?? 'email@example.com',
+          ),
+        ),
+      );
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => Sign_Up()),
+      );
+    }
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    Future.delayed(Duration(seconds: 5), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => Sign_Up()),
-      );
-    });
   }
 
   @override

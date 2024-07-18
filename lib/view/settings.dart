@@ -4,17 +4,17 @@ import 'package:store/admin/sell.dart';
 import 'package:store/view/home.dart';
 
 void main() {
-  runApp(settings());
+  runApp(Settings());
 }
 
-class settings extends StatefulWidget {
-  const settings({super.key});
+class Settings extends StatefulWidget {
+  const Settings({super.key});
 
   @override
-  State<settings> createState() => _settingsState();
+  State<Settings> createState() => _SettingsState();
 }
 
-class _settingsState extends State<settings> {
+class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,7 +36,7 @@ class _settingsState extends State<settings> {
                             MaterialPageRoute(
                                 builder: (context) => Home(
                                       email: '',
-                                      username: '',
+                                      username: '', dataList: [],
                                     )));
                       },
                       child: Text(

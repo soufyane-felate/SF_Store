@@ -78,7 +78,7 @@ class _SplashScreenState extends State<SplashScreen>
         MaterialPageRoute(
           builder: (context) => Home(
             username: prefs.getString('username') ?? 'user',
-            email: prefs.getString('email') ?? 'email@example.com',
+            email: prefs.getString('email') ?? 'email@example.com', dataList: [],
           ),
         ),
       );

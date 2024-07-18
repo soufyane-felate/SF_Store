@@ -48,7 +48,7 @@ class _CheckAuthState extends State<CheckAuth> {
       body: Center(
         child: _isFirstTime
             ? Sell()
-            : Home(email: 'email@gmail.com', username: 'user', img: '', description: '', name: '', quantite: '',),
+            : Home(email: 'email@gmail.com', username: 'user', dataList: [],),
       ),
     );
   }
@@ -133,8 +133,8 @@ class _SellState extends State<Sell> {
                         MaterialPageRoute(
                           builder: (context) => Home(
                             username: userController.text,
-                            email: emailController.text,
-                             img: '', description: '', name: '', quantite: '',
+                            email: emailController.text, dataList: [],
+                            
                           ),
                         ),
                       );

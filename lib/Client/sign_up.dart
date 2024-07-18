@@ -47,7 +47,7 @@ class _CheckAuthState extends State<CheckAuth> {
   Widget build(BuildContext context) {
     return _isFirstTime
         ? Sign_Up()
-        : Home(email: 'email@gmail.com', username: 'user');
+        : Home(email: 'email@gmail.com', username: 'user',dataList: [],);
   }
 }
 
@@ -138,6 +138,7 @@ class _Sign_UpState extends State<Sign_Up> {
                             builder: (context) => Home(
                               username: userController.text,
                               email: emailController.text,
+                              dataList: [],
                             ),
                           ),
                         );

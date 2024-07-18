@@ -42,7 +42,7 @@ class NavBar extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        Home(email: email, username: username)));
+                        Home(email: email, username: username,dataList: [],)));
           },
         ),
         ListTile(
@@ -50,7 +50,7 @@ class NavBar extends StatelessWidget {
           title: Text("Settings"),
           onTap: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => settings()));
+                context, MaterialPageRoute(builder: (context) => Settings()));
           },
         ),
         ListTile(

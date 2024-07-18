@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:store/model/product.dart';
 import 'package:store/view/home.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Add extends StatefulWidget {
   const Add({Key? key}) : super(key: key);
@@ -13,11 +15,25 @@ class _AddState extends State<Add> {
   var name = TextEditingController();
   var description = TextEditingController();
   var quantite = TextEditingController();
-  var img = TextEditingController();
   var price = TextEditingController();
+  List<String> selectedSizes = [];
+  List<File> _images = []; 
 
   List<Product> dataList = [];
   bool isSwitched = false;
+
+  Future<void> _pickImages() async {
+    final picker = ImagePicker();
+    final pickedFiles = await picker.pickMultiImage();
+
+    setState(() {
+      if (pickedFiles != null) {
+        _images = pickedFiles.map((pickedFile) => File(pickedFile.path)).toList();
+      } else {
+        print('No images selected.');
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +47,14 @@ class _AddState extends State<Add> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             SizedBox(height: 80),
-            Text(
-              "Add your product",
-              style: TextStyle(
-                fontFamily: 'Baskervville',
-                fontWeight: FontWeight.bold,
-                fontSize: 40,
+            Center(
+              child: Text(
+                "Add your product",
+                style: TextStyle(
+                  fontFamily: 'Baskervville',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 40,
+                ),
               ),
             ),
             SizedBox(height: 100),
@@ -96,13 +114,40 @@ class _AddState extends State<Add> {
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 20),
-            TextField(
-              controller: img,
-              decoration: InputDecoration(
-                labelText: "Image URL",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
+            ElevatedButton(
+              onPressed: _pickImages,
+              child: Text("Pick Images from Gallery"),
+            ),
+            SizedBox(height: 20),
+            _images.isEmpty
+                ? Text('No images selected.')
+                : Container(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _images.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Image.file(
+                            _images[index],
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+            SizedBox(height: 20),
+            Container(
+              child: Row(
+                children: [
+                  _buildSizeCard("XL"),
+                  _buildSizeCard("L"),
+                  _buildSizeCard("XXL"),
+                  _buildSizeCard("XXXL"),
+                ],
               ),
             ),
             SizedBox(height: 20),
@@ -111,12 +156,13 @@ class _AddState extends State<Add> {
                 setState(() {
                   dataList.add(
                     Product(
-                      img: img.text,
-                      quantite: quantite.text,
-                      description: description.text,
                       name: name.text,
+                      description: description.text,
+                      quantite: quantite.text,
                       price: price.text,
                       isSwitched: isSwitched,
+                      sizes: selectedSizes,
+                      imagePaths: _images.map((image) => image.path).toList(), 
                     ),
                   );
                 });
@@ -140,6 +186,35 @@ class _AddState extends State<Add> {
               child: Text("Add"),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSizeCard(String size) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            if (selectedSizes.contains(size)) {
+              selectedSizes.remove(size);
+            } else {
+              selectedSizes.add(size);
+            }
+          });
+        },
+        child: Card(
+          color: selectedSizes.contains(size) ? Colors.blue : Colors.white,
+          child: Center(
+            child: Text(
+              size,
+              style: TextStyle(
+                fontFamily: 'Baskervville',
+                fontSize: 24,
+                color: selectedSizes.contains(size) ? Colors.white : Colors.black,
+              ),
+            ),
+          ),
         ),
       ),
     );

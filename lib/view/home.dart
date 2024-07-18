@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:store/Client/sign_up.dart';
 import 'package:store/model/product.dart';
@@ -142,7 +143,7 @@ class _HomeState extends State<Home> {
 
   Widget _buildHomePage() {
     return CustomScrollView(
-      slivers: [
+        slivers: [
         SliverPersistentHeader(
           pinned: true,
           floating: false,
@@ -174,7 +175,7 @@ class _HomeState extends State<Home> {
               children: [
                 Positioned(
                   top: 25,
-                  left: 20,
+                  left: 18,
                   child: Material(
                     child: Container(
                       height: 170.0,
@@ -196,7 +197,7 @@ class _HomeState extends State<Home> {
                 ),
                 Positioned(
                   top: 0,
-                  left: 30,
+                  left: 29,
                   child: Card(
                     elevation: 10.0,
                     shadowColor: Colors.grey.withOpacity(0.5),
@@ -311,10 +312,15 @@ class _HomeState extends State<Home> {
                     color: Color.fromARGB(255, 241, 247, 247),
                     child: Column(
                       children: [
-                        Container(
+                         Container(
                           width: double.infinity,
                           height: 110,
-                          child: Image.network(data.img, fit: BoxFit.cover),
+                          child: data.imagePaths.isNotEmpty
+                              ? Image.file(
+                                  File(data.imagePaths[0]), 
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(), 
                         ),
                         Center(
                           child: Text(
@@ -322,7 +328,6 @@ class _HomeState extends State<Home> {
                             style: TextStyle(fontWeight: FontWeight.w900),
                           ),
                         ),
-                        //   Text("Quantity ${data.quantite}"),
                         Text("${data.price} DH"),
                         Text(
                           data.isSwitched
